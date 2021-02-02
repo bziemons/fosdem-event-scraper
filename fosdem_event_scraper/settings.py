@@ -14,7 +14,6 @@ BOT_NAME = "fosdem_event_scraper"
 SPIDER_MODULES = ["fosdem_event_scraper.spiders"]
 NEWSPIDER_MODULE = "fosdem_event_scraper.spiders"
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'fosdem_event_scraper (+http://www.yourdomain.com)'
 
@@ -112,20 +111,24 @@ ICAL_LOCATION_FORMAT = "{room} -- {track}"
 # {title} is replaced with what was found on the event page
 ICAL_SUMMARY_FORMAT = "{title}"
 
-# ISO dates for the two FOSDEM dates
-FOSDEM_SATURDAY_ISODATE = "2021-02-06"
-FOSDEM_SUNDAY_ISODATE = "2021-02-07"
+# ISO dates for the FOSDEM dates
+FOSDEM_DAY_TO_ISODATE = {
+    "saturday": "2021-02-06",
+    "sunday": "2021-02-07",
+}
 
 # all replacements that needs to be done on a title to be safe to use as an uid
 # underscores will be stripped from start/end and multiple underscores will be replaced with a single underscore
 UID_REPLACEMENTS = [
     (":", ""),
     ("'", ""),
+    ("’", ""),
     ("!", ""),
     ("?", ""),
     (",", ""),
     ("(", ""),
     (")", ""),
+    ("+", "plus"),
     ("&", "_and_"),
     ("/", "_and_or_"),
     (" ", "_"),

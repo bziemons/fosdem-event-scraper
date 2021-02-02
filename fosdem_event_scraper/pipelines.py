@@ -17,20 +17,20 @@ from fosdem_event_scraper.settings import (
     ICAL_LOCATION_FORMAT,
     ICAL_SUMMARY_FORMAT,
     ICAL_OUTPUT_FILE,
-    FOSDEM_SATURDAY_ISODATE,
-    FOSDEM_SUNDAY_ISODATE,
     UID_REPLACEMENTS,
+    FOSDEM_DAY_TO_ISODATE,
 )
 
 
-def attach_event_time(event: icalendar.Event, item: typing.Dict):
+def attach_event_time(
+    event: icalendar.Event, item: typing.Dict, day_mapping: typing.Dict
+):
     event.add("dtstamp", item["time"], encode=True)
 
     fosdem_tzinfo = pytz.timezone("Europe/Brussels")
-    if item["day"].lower() == "saturday":
-        day = datetime.fromisoformat(FOSDEM_SATURDAY_ISODATE)
-    elif item["day"].lower() == "sunday":
-        day = datetime.fromisoformat(FOSDEM_SUNDAY_ISODATE)
+    day = item["day"].casefold()
+    if day in day_mapping:
+        day = day_mapping[day]
     else:
         raise RuntimeError("unknown day: " + item["day"])
 
@@ -51,6 +51,15 @@ def attach_event_time(event: icalendar.Event, item: typing.Dict):
 class FosdemEventToCalenderPipeline:
     file = None
     cal = None
+    day_to_isodate = {}
+
+    def get_day_mapping(self):
+        if not self.day_to_isodate:
+            self.day_to_isodate = {
+                day.casefold(): datetime.fromisoformat(isostr)
+                for day, isostr in FOSDEM_DAY_TO_ISODATE.items()
+            }
+        return self.day_to_isodate
 
     def open_spider(self, spider):
         self.file = open(ICAL_OUTPUT_FILE, "w")
@@ -62,7 +71,7 @@ class FosdemEventToCalenderPipeline:
 
     def process_item(self, item, spider):
         event = icalendar.Event()
-        attach_event_time(event, item)
+        attach_event_time(event, item, self.get_day_mapping())
         event.add("summary", ICAL_SUMMARY_FORMAT.format(title=item["title"]))
         event.add(
             "location",
