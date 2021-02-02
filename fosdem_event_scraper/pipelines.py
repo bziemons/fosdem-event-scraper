@@ -4,21 +4,19 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+
 import re
-import types
 import typing
 from datetime import date, time, datetime
 
 import icalendar
 import pytz
-from pytz import tzinfo
 
 
 def attach_event_time(event: icalendar.Event, item: typing.Dict):
     event.add('dtstamp', item['time'], encode=True)
 
     fosdem_tzinfo = pytz.timezone('Europe/Brussels')
-    day = None
     if item['day'].lower() == "saturday":
         day = date(2019, 2, 2)
     elif item['day'].lower() == "sunday":
@@ -36,7 +34,7 @@ def attach_event_time(event: icalendar.Event, item: typing.Dict):
     event.add('dtend', datetime.combine(day, endtime, tzinfo=fosdem_tzinfo), encode=True)
 
 
-class FosdemEventToCalenderPipeline(object):
+class FosdemEventToCalenderPipeline:
     file = None
     cal = None
 

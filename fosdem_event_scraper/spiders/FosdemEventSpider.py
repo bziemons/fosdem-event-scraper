@@ -12,7 +12,7 @@ class FosdemEventSpider(scrapy.Spider):
             for url in map(str.rstrip, fhandle.readlines()):
                 yield scrapy.Request(url=url)
 
-    def parse(self, response):
+    def parse(self, response, **kwargs):
         ret = dict()
         for info_element in response.css("ul.side-box > li"):
             infoid = info_element.css("strong::text").extract_first().lower()
