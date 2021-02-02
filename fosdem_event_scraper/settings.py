@@ -107,9 +107,13 @@ ICAL_EVENT_UID = "{uid}@fosdem.org/2021"
 # {room} and {track} are replaced with what was found on the event page
 ICAL_LOCATION_FORMAT = "{room} -- {track}"
 
-# the format of the summary for the event
+# the format of the summary (title) for the event
 # {title} is replaced with what was found on the event page
 ICAL_SUMMARY_FORMAT = "{title}"
+
+# the format of the description for the event
+# {url} is replaced with the event page URL
+ICAL_DESCRIPTION_FORMAT = "Event URL: {url}"
 
 # ISO dates for the FOSDEM dates
 FOSDEM_DAY_TO_ISODATE = {

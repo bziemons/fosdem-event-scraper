@@ -19,6 +19,7 @@ from fosdem_event_scraper.settings import (
     ICAL_OUTPUT_FILE,
     UID_REPLACEMENTS,
     FOSDEM_DAY_TO_ISODATE,
+    ICAL_DESCRIPTION_FORMAT,
 )
 
 
@@ -86,5 +87,6 @@ class FosdemEventToCalenderPipeline:
         event.add("uid", ICAL_EVENT_UID.format(uid=uid))
         event.add("sequence", 1)
         event.add("url", item["url"])
+        event.add("description", ICAL_DESCRIPTION_FORMAT.format(url=item["url"]))
         self.cal.add_component(event)
         return item
